@@ -1,5 +1,6 @@
 package com.aws.s3.demo;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -29,7 +30,7 @@ public class S3StorageServiceDemo {
 	private static final String DOWNLOAD_FILE_PATH = "downloaded.txt";
 
 	public static void main(String[] args) throws IOException {
-		
+
 		S3Client s3 = S3Client.builder().region(Region.US_EAST_1) // Change as per your region
 				.credentialsProvider(ProfileCredentialsProvider.create()).build();
 
@@ -60,7 +61,7 @@ public class S3StorageServiceDemo {
 		}
 	}
 
-	private static void createBucket(S3Client s3) {
+	public static void createBucket(S3Client s3) {
 		try {
 			CreateBucketRequest request = CreateBucketRequest.builder().bucket(BUCKET_NAME)
 					.createBucketConfiguration(
@@ -74,14 +75,14 @@ public class S3StorageServiceDemo {
 		}
 	}
 
-	private static void uploadObject(S3Client s3) {
+	public static void uploadObject(S3Client s3) {
 		PutObjectRequest putRequest = PutObjectRequest.builder().bucket(BUCKET_NAME).key(OBJECT_KEY).build();
 
 		s3.putObject(putRequest, RequestBody.fromFile(Paths.get(UPLOAD_FILE_PATH)));
 		System.out.println("✅ File uploaded: " + OBJECT_KEY);
 	}
 
-	private static void listObjects(S3Client s3) {
+	public static void listObjects(S3Client s3) {
 		ListObjectsV2Request listReq = ListObjectsV2Request.builder().bucket(BUCKET_NAME).build();
 
 		ListObjectsV2Response listRes = s3.listObjectsV2(listReq);
@@ -93,7 +94,7 @@ public class S3StorageServiceDemo {
 		}
 	}
 
-	private static void downloadObject(S3Client s3) throws IOException {
+	public static void downloadObject(S3Client s3) throws IOException {
 		GetObjectRequest getRequest = GetObjectRequest.builder().bucket(BUCKET_NAME).key(OBJECT_KEY).build();
 
 		FileOutputStream fos = new FileOutputStream(DOWNLOAD_FILE_PATH);
@@ -102,24 +103,24 @@ public class S3StorageServiceDemo {
 		fos.close();
 	}
 
-	private static void deleteObject(S3Client s3) {
+	public static void deleteObject(S3Client s3) {
 		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(BUCKET_NAME).key(OBJECT_KEY).build();
 
 		s3.deleteObject(deleteRequest);
 		System.out.println("🗑️ Object deleted: " + OBJECT_KEY);
 	}
 
-	private static void deleteBucket(S3Client s3) {
+	public static void deleteBucket(S3Client s3) {
 		DeleteBucketRequest deleteBucketRequest = DeleteBucketRequest.builder().bucket(BUCKET_NAME).build();
 
 		s3.deleteBucket(deleteBucketRequest);
 		System.out.println("🗑️ Bucket deleted: " + BUCKET_NAME);
 	}
 
-	private static void createSampleFile(String path) throws IOException {
-		try (FileOutputStream fos = new FileOutputStream(path)) {
-			fos.write("Hello from Java S3 demo!".getBytes());
-		}
-		System.out.println("📄 Sample file created: " + path);
+	public static void createSampleFile(String fileName) throws IOException {
+		File file = new File(fileName);
+		// logic to write something to the file (optional)
+		file.createNewFile(); // simplified
 	}
+
 }
